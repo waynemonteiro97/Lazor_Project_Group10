@@ -1,0 +1,4 @@
+To Wayne:
+The readbff file reads the values of A,B,C as empty if there is no value to it.
+Please change the code to give 0 when there is no value assigned to a block type.
+Instead of giving the values in the form of a list ,please give them as integers.
