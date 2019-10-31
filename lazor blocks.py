@@ -7,7 +7,6 @@ Created on Wed Oct 30 12:09:11 2019
 """
 import time
 from itertools import *
-from sympy.utilities.iterables import multiset_permutations
 import copy
 
 def read_bff(filename):
