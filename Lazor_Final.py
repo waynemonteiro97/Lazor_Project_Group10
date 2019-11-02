@@ -3,7 +3,6 @@ import numpy as np
 import math
 import copy
 
-
 def create_grid(board):
     length = 2 * len(board) + 1
     width = 2 * len(board[0]) + 1
@@ -13,10 +12,54 @@ def create_grid(board):
         for j in range(width):
             grid[i].append('x') 
     for i in range(len(board)):
-        for j in range(len(board)):
+        for j in range(len(board[0])):
             grid[2 * i + 1][2 * j + 1] = board[i][j]
-    # for i in range(len(grid)):
-    #    print(grid[i])
+    '''
+    for y in grid:
+        for x in y:
+            print(x, end=' ')
+        print()
+    '''
+    return grid
+
+
+def read_bff(filename):
+    grid = []
+    A_blocks = 0
+    B_blocks = 0
+    C_blocks = 0
+    lazor_ori = []
+    hole = []
+    bff_read = open(filename, "r").read()
+    file_content = bff_read.strip().split("\n")
+
+    for i in range(len(file_content)):
+        if file_content[i] == "GRID START":
+            a = i+1
+            while file_content[a] != "GRID STOP":
+                grid.append(file_content[a])
+                a = a + 1
+        if len(file_content[i]) == 3 and file_content[i][0] == "A":
+            A_blocks = int(file_content[i][2])
+        if len(file_content[i]) == 3 and file_content[i][0] == "B":
+            B_blocks = int(file_content[i][2])
+        if len(file_content[i]) == 3 and file_content[i][0] == "C":
+            C_blocks = int(file_content[i][2])
+        if len(file_content[i]) != 0 and file_content[i][0] == "L":
+            strip_lazor = file_content[i].split(" ")
+            for j in range(1, len(strip_lazor), 2):
+                lazor_ori.append((int(strip_lazor[j]), int(strip_lazor[j+1])))
+
+        if len(file_content[i]) != 0 and file_content[i][0] == "P":
+            hole.append([int(file_content[i][2]), int(file_content[i][4])])
+    updated_grid = [] 
+    lazors = []
+    for i in range(int(len(lazor_ori)/2)):
+        lazors.append([lazor_ori[2*i], lazor_ori[2*i + 1]])
+    for x in grid: 
+        lists = x.split() 
+        updated_grid.append(lists)
+    return(updated_grid, A_blocks, B_blocks, C_blocks, lazors, hole)
 
 
 def next_step(grid, pos, direc):
@@ -26,13 +69,13 @@ def next_step(grid, pos, direc):
         '''
         If y is even then block lies above or below
         '''
-        if grid[y + direc[1]][x] == 'o' or grid[y + direc[1]][x] == 'x':
+        if grid[y + direc[1]][x].lower() == 'o' or grid[y + direc[1]][x].lower() == 'x':
             new_dir = direc
-        elif grid[y + direc[1]][x] == 'a':
+        elif grid[y + direc[1]][x].lower() == 'a':
             new_dir = [direc[0], -1 * direc[1]]
-        elif grid[y + direc[1]][x] == 'b':
+        elif grid[y + direc[1]][x].lower() == 'b':
             new_dir = []
-        elif grid[y + direc[1]][x] == 'c':
+        elif grid[y + direc[1]][x].lower() == 'c':
             direc1 = direc
             direc2 = [direc[0], -1 * direc[1]]
             new_dir = [direc1[0], direc1[1], direc2[0], direc2[1]]
@@ -40,13 +83,13 @@ def next_step(grid, pos, direc):
         '''
         If y is odd the block is left or right
         '''
-        if grid[y][x + direc[0]] == 'o' or grid[y][x + direc[0]] == 'x':
+        if grid[y][x + direc[0]].lower() == 'o' or grid[y][x + direc[0]].lower() == 'x':
             new_dir = direc
-        elif grid[y][x + direc[0]] == 'a':
+        elif grid[y][x + direc[0]].lower() == 'a':
             new_dir = [-1 * direc[0], direc[1]]
-        elif grid[y][x + direc[0]] == 'b':
+        elif grid[y][x + direc[0]].lower() == 'b':
             new_dir = []
-        elif grid[y][x + direc[0]] == 'c':
+        elif grid[y][x + direc[0]].lower() == 'c':
             direc1 = direc
             direc2 = [-1 * direc[0], direc[1]]
             new_dir = [direc1[0], direc1[1], direc2[0], direc2[1]]
@@ -105,44 +148,8 @@ def lazor_path(grid, lazors, sinks):
     else:
         return False
 
-def read_bff(filename):
-    grid = []
-    A_blocks = 0
-    B_blocks = 0
-    C_blocks = 0
-    lazor_ori = []
-    hole = []
-    bff_read = open(filename, "r").read()
-    file_content = bff_read.strip().split("\n")
 
-    for i in range(len(file_content)):
-        if file_content[i] == "GRID START":
-            a = i+1
-            while file_content[a] != "GRID STOP":
-                grid.append(file_content[a])
-                a = a + 1
-        if len(file_content[i]) == 3 and file_content[i][0] == "A":
-            A_blocks = int(file_content[i][2])
-        if len(file_content[i]) == 3 and file_content[i][0] == "B":
-            B_blocks = int(file_content[i][2])
-        if len(file_content[i]) == 3 and file_content[i][0] == "C":
-            C_blocks = int(file_content[i][2])
-        if len(file_content[i]) != 0 and file_content[i][0] == "L":
-            strip_lazor = file_content[i].split(" ")
-            for j in range(1, len(strip_lazor), 2):
-                lazor_ori.append((int(strip_lazor[j]), int(strip_lazor[j+1])))
-
-        if len(file_content[i]) != 0 and file_content[i][0] == "P":
-            hole.append((int(file_content[i][2]), int(file_content[i][4])))
-    updated_grid = [] 
-    for x in grid: 
-        lists = x.split(' ') 
-        updated_grid.append(lists)
-    return(updated_grid, A_blocks, B_blocks, C_blocks, lazor_ori, hole)
-
-
-
-def blocks(board, A_blocks, B_blocks, C_blocks):
+def blocks(board, A_blocks, B_blocks, C_blocks, lazors, hole):
     movable_blocks=[]
     print(board)
     for x in board:
@@ -165,7 +172,6 @@ def blocks(board, A_blocks, B_blocks, C_blocks):
     ITER_B = 0
     length=len(board)
     width=len(board[0])
-    MAX_BOARDS = 2
     while ITER_B <= MAX_BOARDS:
         permut = list(np.random.permutation(movable_blocks))
         possible_board = copy.deepcopy(board)
@@ -177,13 +183,17 @@ def blocks(board, A_blocks, B_blocks, C_blocks):
                     counter +=1
         grid = create_grid(possible_board)
         ITER_B += 1
+        if lazor_path(grid, lazors, hole):
+            print("Congo")
+            print(grid)
+            break
 
     
 if __name__ == "__main__":
-    grid, A_blocks, B_blocks, C_blocks, lazor_ori, hole=read_bff("dark_1.bff")
-    print(lazor_ori)
+    grid, A_blocks, B_blocks, C_blocks, lazors, hole=read_bff("yarn_5.bff")
+    print(lazors)
     print(hole)
     time_start = time.time()
-    blocks(grid, A_blocks, B_blocks, C_blocks)
+    blocks(grid, A_blocks, B_blocks, C_blocks, lazors, hole)
     time_end = time.time()
     print('run time: %f seconds' %(time_end - time_start))
