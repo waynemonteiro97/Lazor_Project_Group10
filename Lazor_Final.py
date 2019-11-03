@@ -1,5 +1,6 @@
 import time
 import numpy as np
+import random
 import math
 import copy
 
@@ -172,8 +173,14 @@ def blocks(board, A_blocks, B_blocks, C_blocks, lazors, hole):
     ITER_B = 0
     length=len(board)
     width=len(board[0])
+    print(lazors)
+    print(hole)
+    print(MAX_BOARDS)
     while ITER_B <= MAX_BOARDS:
-        permut = list(np.random.permutation(movable_blocks))
+        sinks = copy.deepcopy(hole)
+        permut = copy.deepcopy(movable_blocks)
+        # permut = list(np.random.permutations(movable_blocks))
+        random.shuffle(permut)
         possible_board = copy.deepcopy(board)
         counter = 0
         for i in range(length):
@@ -183,14 +190,19 @@ def blocks(board, A_blocks, B_blocks, C_blocks, lazors, hole):
                     counter +=1
         grid = create_grid(possible_board)
         ITER_B += 1
-        if lazor_path(grid, lazors, hole):
+        if lazor_path(grid, lazors, sinks):
+            print(lazors)
+            print(sinks)
             print("Congo")
-            print(grid)
+            for y in grid:
+                for x in y:
+                    print(x, end=' ')
+                print()
             break
-
+    print(ITER_B)
     
 if __name__ == "__main__":
-    grid, A_blocks, B_blocks, C_blocks, lazors, hole=read_bff("yarn_5.bff")
+    grid, A_blocks, B_blocks, C_blocks, lazors, hole=read_bff("numbered_6.bff")
     print(lazors)
     print(hole)
     time_start = time.time()
