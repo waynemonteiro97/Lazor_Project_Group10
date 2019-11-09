@@ -1,10 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov  9 18:11:47 2019
+
+@author: Wayne Monteiro
+"""
+
 '''
 ***** Lazor Project 2019 - Software Carpentry *****
 Contributors - Charan S. Pasupuleti. , Prabhjot K. Luthra, Wayne D. Moneteiro
 Objective:- The code so written should generate solution for placing the blocks
 in a given board, thus solving the lazor board so given and making lazors
 intersect all holes.
-
 Method or Idea :- Lazors or holes are always on the middle point of the edges
 of the blocks, thus we designed a grid for a given board, so each block in the
 board is a middle point on the block in a grid (like a block surrounded by x's)
@@ -20,7 +26,6 @@ So now it's easy to mathematical have a coordinate system for the grid with
  Y - As the directions for the coordinate system
  And just like solving a maze, here we increment each of the lazors one step
  at a time, and as it intersects the holes we remove that hole from the list
-
  For Placement of Blocks in the grid at the right ( or even wrong) position
  We first found all the permutations of o's , A's, B's, C's ( movable blocks)
  and then generated or created grids and checked each of them with the lazor
@@ -28,7 +33,6 @@ So now it's easy to mathematical have a coordinate system for the grid with
  hit all the sinks/ holes or not. As soon as it comes across the right grid,
  the simulation stops and it prnts out the correct grid or
  the Solution for the lazor game.
-
  Lastly as an additional challenge we generated a GUI image for the solution
  with light grey blocks/ background as - non movable blocks (x)
  dark grey blocks as - empty positions (o's)
@@ -138,6 +142,17 @@ class Grid():
                         print(possible_grid[2 * i + 1][2 * j + 1], end=' ')
                     print()
                 print("This is the solution grid! OR just check the pngimage so created!")
+                f= open("solution_textfile.txt","w+")
+                f.write("The solution to your board is: \n")
+                for i in range(length):
+                    for j in range(width):
+                        f.write(possible_grid[2 * i + 1][2 * j + 1])
+                        f.write(" ")
+                    f.write("\n")
+                f.write("A is the reflect block, B is the absorb ")
+                f.write("block and  C is the reflect block.\nThe o should ")
+                f.write("be empty. Try not to cheat next time :)" )
+                f.close()
                 break
             t2 = time.time()
             if t2 - t1 >= 5:
@@ -165,7 +180,6 @@ def read_bff(filename):
     C_blocks - integer : Number of blocks of Type C
     lazors - list of lists : List of all lazors with their origin and direction
     hole - list : List of all the hole points
-
     '''
     board = []
     A_blocks = 0
