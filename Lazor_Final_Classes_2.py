@@ -42,6 +42,7 @@ import time
 import copy
 from sympy.utilities.iterables import multiset_permutations
 
+
 class Grid():
     '''
     This Class creates objects which represent the board
@@ -84,7 +85,6 @@ class Grid():
                 grid[2 * i + 1][2 * j + 1] = self.board[i][j]
         self.grid = grid
 
-
     def blocks(self):
         '''
         Depensing upon the data read from the bff file
@@ -95,8 +95,6 @@ class Grid():
         with lazor solver function if the generated board is the solution for
         the board so given, The maximum iterations possible and iterations so
         performed are printed
-        Note - everytime a new board is generated with that permutation, each
-        of them is declared as an object for the Class Grid
         ** Parameters **
         self - consists of all data (board, A_blocks, B_blocks, C_blocks .. )
         ** Returns **
@@ -114,18 +112,17 @@ class Grid():
             movable_blocks[i] = 'B'
         for i in range((self.A + self.B), (self.A + self.B + self.C)):
             movable_blocks[i] = 'C'
-        O_blocks = len(movable_blocks) - (self.A + self.B + self.C)
         ITER_B = 0
-        b = "Loading" 
-        print (b, end="\r")
+        b = "Loading"
+        print(b, end="\r")
         t1 = time.time()
         permutations = list(multiset_permutations(movable_blocks))
         t2 = time.time()
         print("Maximum possible iteration possible : ", len(permutations))
-        print("Time for generating grids: ", t2-t1)
+        print("Time for generating grids: ", t2 - t1)
         x = 0
-        b = "Loading" 
-        print (b, end="\r")
+        b = "Loading"
+        print(b, end="\r")
         t1 = time.time()
         for permut in permutations:
             sinks = copy.deepcopy(self.H)
@@ -140,13 +137,13 @@ class Grid():
                     for j in range(width):
                         print(possible_grid[2 * i + 1][2 * j + 1], end=' ')
                     print()
-                print("This is the solution grid! OR just check the png image so created!")
+                print("This is the solution grid! OR just check the pngimage so created!")
                 break
             t2 = time.time()
             if t2 - t1 >= 5:
                 t1 = time.time()
-                b = "Loading" + "." * x 
-                print (b, end="\r")
+                b = "Loading" + "." * x
+                print(b, end="\r")
                 if x == 3:
                     x = 0
                 x += 1
@@ -330,7 +327,6 @@ def lazor_path(grid, lazors, sinks):
     MAX_ITER = 100
     while len(sinks) != 0 and ITER <= MAX_ITER:
         ITER += 1
-        n = len(stack_lazors)
         for i in range(len(stack_lazors)):
             lazor_pos = list(stack_lazors[i][-1][0])
             direc = list(stack_lazors[i][-1][1])
@@ -360,26 +356,165 @@ def lazor_path(grid, lazors, sinks):
 
 
 def unit_test():
-    #Dark_1.bff
+    # Dark_1.bff
     grid = [['x', 'o', 'o'], ['o', 'o', 'o'], ['o', 'o', 'x']]
     A_blocks = 0
     B_blocks = 3
     C_blocks = 0
-    lazors = [[(3, 0), (-1, 1)], [(1, 6), (1, -1)], [(3, 6), (-1, -1)], [(4, 3), (1, -1)]]
+    lazors = [[(3, 0), (-1, 1)], [(1, 6), (1, -1)],
+              [(3, 6), (-1, -1)], [(4, 3), (1, -1)]]
     hole = [[0, 3], [6, 1]]
-    solved_grid = [['x','x','x','x','x','x','x'],
-                   ['x','x','x','o','x','o','x'],
-                   ['x','x','x','x','x','x','x'],
-                   ['x','o','x','B','x','o','x'],
-                   ['x','x','x','x','x','x','x'],
-                   ['x','B','x','B','x','x','x'],
-                   ['x','x','x','x','x','x','x']]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'x', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'B', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'B', 'x', 'x', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x']]
     assert read_bff("dark_1.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Mad_1.bff
+    grid = [['o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o'],
+            ['o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o']]
+    A_blocks = 2
+    B_blocks = 0
+    C_blocks = 1
+    lazors = [[(2, 7), (1, -1)]]
+    hole = [[3, 0], [4, 3], [2, 5], [4, 7]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'c', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("mad_1.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Mad_4.bff
+    grid = [['o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o'],
+            ['o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o']]
+    A_blocks = 5
+    B_blocks = 0
+    C_blocks = 0
+    lazors = [[(7, 2), (-1, 1)]]
+    hole = [[3, 4], [7, 4], [5, 8]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'A', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'A', 'x', 'o', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'A', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("mad_4.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Mad_7.bff
+    grid = [['o', 'o', 'o', 'o', 'o'], ['o', 'o', 'o', 'o', 'o'],
+            ['o', 'o', 'o', 'o', 'x'], ['o', 'o', 'o', 'o', 'o'],
+            ['o', 'o', 'o', 'o', 'o']]
+    A_blocks = 6
+    B_blocks = 0
+    C_blocks = 0
+    lazors = [[(2, 1), (1, 1)], [(9, 4), (-1, 1)]]
+    hole = [[6, 3], [6, 5], [6, 7], [2, 9], [9, 6]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'A', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'A', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'o', 'x', 'A', 'x', 'o', 'x', 'x', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x', 'A', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'A', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("mad_7.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Numbered_6.bff
+    grid = [['o', 'o', 'o'], ['o', 'x', 'x'], ['o', 'o', 'o'],
+            ['o', 'x', 'o'], ['o', 'o', 'o']]
+    A_blocks = 3
+    B_blocks = 3
+    C_blocks = 0
+    lazors = [[(4, 9), (-1, -1)], [(6, 9), (-1, -1)]]
+    hole = [[2, 5], [5, 0]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'o', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'x', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'o', 'x', 'o', 'x']]
+    assert read_bff("numbered_6.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Showstopper_4.bff
+    grid = [['B', 'o', 'o'], ['o', 'o', 'o'], ['o', 'o', 'o']]
+    A_blocks = 3
+    B_blocks = 3
+    C_blocks = 0
+    lazors = [[(3, 6), (-1, -1)]]
+    hole = [[2, 3]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'A', 'x', 'B', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'o', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'o', 'x', 'B', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("showstopper_4.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Tiny_5.bff
+    grid = [['o', 'B', 'o'], ['o', 'o', 'o'], ['o', 'o', 'o']]
+    A_blocks = 3
+    B_blocks = 0
+    C_blocks = 1
+    lazors = [[(4, 5), (-1, -1)]]
+    hole = [[1, 2], [6, 3]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'B', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'C', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("tiny_5.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
+    assert lazor_path(solved_grid,lazors, hole) == True
+    # Yarn_5.bff
+    grid = [['o', 'B', 'x', 'o', 'o'], ['o', 'o', 'o', 'o', 'o'],
+            ['o', 'x', 'o', 'o', 'o'], ['o', 'x', 'o', 'o', 'x'],
+            ['o', 'o', 'x', 'x', 'o'], ['B', 'o', 'x', 'o', 'o']]
+    A_blocks = 8
+    B_blocks = 0
+    C_blocks = 0
+    lazors = [[(4, 1), (1, 1)]]
+    hole = [[6, 9], [9, 2]]
+    solved_grid = [['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'B', 'x', 'x', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'A', 'x', 'o', 'x', 'o', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'x', 'x', 'o', 'x', 'o', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'o', 'x', 'x', 'x', 'A', 'x', 'o', 'x', 'x', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'A', 'x', 'o', 'x', 'x', 'x', 'x', 'x', 'A', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'],
+                   ['x', 'B', 'x', 'A', 'x', 'x', 'x', 'A', 'x', 'o', 'x'],
+                   ['x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x']]
+    assert read_bff("yarn_5.bff") == (grid, A_blocks, B_blocks, C_blocks, lazors, hole)
     assert lazor_path(solved_grid,lazors, hole) == True
 
 
 if __name__ == "__main__":
-    board_given, A_blocks, B_blocks, C_blocks, lazors, hole = read_bff("mad_4.bff")
+    board_given, A_blocks, B_blocks, C_blocks, lazors, hole = read_bff("dark_1.bff")
     print("**** Welcome to the CPW Lazor Solver ****")
     print("Given Board :- ")
     for y in board_given:
@@ -387,10 +522,9 @@ if __name__ == "__main__":
             print(x, end=' ')
         print()
     print("A : %d, B : %d, C : %d Type of Blocks given" % (A_blocks, B_blocks, C_blocks))
-    time_start = time.time()
     unit_test()
+    time_start = time.time()
     Board = Grid(board_given, A_blocks, B_blocks, C_blocks, lazors, hole)
     Board.blocks()
     time_end = time.time()
     print('Run time: %f seconds' % (time_end - time_start))
-    unit_test()
