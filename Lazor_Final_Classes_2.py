@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov  9 18:11:47 2019
-
-@author: Wayne Monteiro
-"""
-
 '''
 ***** Lazor Project 2019 - Software Carpentry *****
 Contributors - Charan S. Pasupuleti. , Prabhjot K. Luthra, Wayne D. Moneteiro
@@ -89,7 +82,7 @@ class Grid():
                 grid[2 * i + 1][2 * j + 1] = self.board[i][j]
         self.grid = grid
 
-    def blocks(self):
+    def blocks(self, filename):
         '''
         Depensing upon the data read from the bff file
         Board, Number of A, B, C blocks, Lazor List, Holes
@@ -142,7 +135,9 @@ class Grid():
                         print(possible_grid[2 * i + 1][2 * j + 1], end=' ')
                     print()
                 print("This is the solution grid! OR just check the pngimage so created!")
-                f= open("solution_textfile.txt","w+")
+                fname1 = filename.split(".bff")[0]
+                fname = fname1 + "_solution_textfile.txt"
+                f = open(fname, "w+")
                 f.write("The solution to your board is: \n")
                 for i in range(length):
                     for j in range(width):
@@ -151,7 +146,7 @@ class Grid():
                     f.write("\n")
                 f.write("A is the reflect block, B is the absorb ")
                 f.write("block and  C is the reflect block.\nThe o should ")
-                f.write("be empty. Try not to cheat next time :)" )
+                f.write("be empty. Try not to cheat next time :)")
                 f.close()
                 break
             t2 = time.time()
@@ -528,7 +523,8 @@ def unit_test():
 
 
 if __name__ == "__main__":
-    board_given, A_blocks, B_blocks, C_blocks, lazors, hole = read_bff("dark_1.bff")
+    filename = "dark_1.bff"
+    board_given, A_blocks, B_blocks, C_blocks, lazors, hole = read_bff(filename)
     print("**** Welcome to the CPW Lazor Solver ****")
     print("Given Board :- ")
     for y in board_given:
@@ -539,6 +535,6 @@ if __name__ == "__main__":
     unit_test()
     time_start = time.time()
     Board = Grid(board_given, A_blocks, B_blocks, C_blocks, lazors, hole)
-    Board.blocks()
+    Board.blocks(filename)
     time_end = time.time()
     print('Run time: %f seconds' % (time_end - time_start))
