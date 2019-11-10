@@ -1,6 +1,7 @@
-# Lazor_Project_Group10 -- Welcome to the CPW Lazor App Solver
+title: Lazor_Project_Group10 -- Welcome to the CPW Lazor App Solver
+show_downloads: true
 
-Here we will attempt to solve the toughest boards you dare to throw at us with our humble yet efficient code.
+description: Here we will attempt to solve the toughest boards you dare to throw at us with our humble yet efficient code.
 
 If you're having trouble solving a particular board, dont worry, just get it into a .bff file. /
 The .bff file should contain:
